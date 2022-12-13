@@ -1,28 +1,22 @@
-package project.soomgo.subject;
+package project.soomgo.entity.user;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import lombok.Getter;
-import project.soomgo.user.Users;
 
-// 어떤 서비스의 고수인지 매핑 테이블
-@Getter
 @Entity
-public class MasterSubject {
+@Getter
+public class UserChatRoomMapping {
 
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Users users;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Subject subject;
+    @ManyToOne
+    private Users user;
 }

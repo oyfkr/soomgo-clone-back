@@ -1,4 +1,4 @@
-package project.soomgo.community;
+package project.soomgo.entity.subject;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,12 +9,15 @@ import lombok.Getter;
 
 @Getter
 @Entity
-public class Community {
+public class Subject {
 
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String category;
+    private String name;
+
+    private Long parentId;
+
 }

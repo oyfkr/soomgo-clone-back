@@ -1,4 +1,4 @@
-package project.soomgo.chat;
+package project.soomgo.entity.chat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
