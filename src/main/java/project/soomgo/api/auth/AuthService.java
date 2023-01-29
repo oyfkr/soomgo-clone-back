@@ -17,6 +17,7 @@ import project.soomgo.entity.user.Users;
 import project.soomgo.entity.user.dto.UserCreateRequest;
 import project.soomgo.entity.user.dto.UserResponse;
 import project.soomgo.entity.user.repository.UsersRepository;
+import project.soomgo.redis.RedisUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +30,7 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RedisUtil redisUtil;
 
     public UserResponse createUser(UserCreateRequest userCreateDTO) {
 
@@ -60,5 +62,16 @@ public class AuthService {
                 RefreshToken.of(authenticate.getName(), tokenDTO.getAccessToken()));
 
         return tokenDTO;
+    }
+
+    public String logout(String accessToken, Users users) {
+
+        // refreshToken 테이블의 refreshToken 삭제
+        refreshTokenRepository.deleteRefreshTokenByKey(users.getEmail());
+
+        // 레디스에 accessToken 사용못하도록 등록
+        redisUtil.setBlackList(accessToken, "accessToken", 1);
+
+        return "로그아웃 완료";
     }
 }

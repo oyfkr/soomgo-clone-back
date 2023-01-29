@@ -8,6 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Component;
 import project.soomgo.api.auth.CustomDetails;
 import project.soomgo.entity.user.repository.UsersRepository;
 import project.soomgo.entity.user.service.CustomUserDetailsService;
+import project.soomgo.redis.RedisUtil;
 
 @Slf4j
 @Component
@@ -39,13 +41,15 @@ public class TokenProvider {
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
 
     private final Key key;
+    private final RedisUtil redisUtil;
 
 
-    public TokenProvider(@Value("${jwt.secret}") String secretKey, UsersRepository usersRepository, CustomUserDetailsService customUserDetailsService) {
+    public TokenProvider(@Value("${jwt.secret}") String secretKey, UsersRepository usersRepository, CustomUserDetailsService customUserDetailsService, RedisUtil redisUtil) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.usersRepository = usersRepository;
         this.customUserDetailsService = customUserDetailsService;
+        this.redisUtil = redisUtil;
     }
 
     public TokenDTO generateTokenDTO(Authentication authentication) {
@@ -79,7 +83,7 @@ public class TokenProvider {
         // 토큰 복호화
         Claims claims = parseClaims(accessToken);
 
-        if(claims.get(AUTHORITIES_KEY) == null) {
+        if (claims.get(AUTHORITIES_KEY) == null) {
             throw new RuntimeException("권한 정보가 없는 토근값입니다.");
         }
 
@@ -98,7 +102,11 @@ public class TokenProvider {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
+            if (redisUtil.hasKeyBlackList(token)){
+                // TODO 에러 발생시키는 부분 수정
+                throw new RuntimeException("로그아웃 했지롱~~");
+            }
+                return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
@@ -112,10 +120,16 @@ public class TokenProvider {
     }
 
     private Claims parseClaims(String accessToken) {
-        try{
+        try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
+    }
+
+    public Long getExpiration(String accessToken) {
+        Date expiration = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody().getExpiration();
+
+        return (expiration.getTime() - new Date().getTime());
     }
 }

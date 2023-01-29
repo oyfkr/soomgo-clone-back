@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import project.soomgo.api.auth.CustomDetails;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -16,7 +18,9 @@ public class UserController {
 
     @GetMapping("test")
     public ResponseEntity<String> test(
-            @AuthenticationPrincipal CustomDetails customDetails
+            @AuthenticationPrincipal CustomDetails customDetails,
+            Authentication authentication,
+            HttpServletRequest servletRequest
     ) {
 
         return ResponseEntity.ok("test");

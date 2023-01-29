@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import project.soomgo.configure.TokenDTO;
-import project.soomgo.entity.user.Users;
 import project.soomgo.entity.user.dto.UserCreateRequest;
 import project.soomgo.entity.user.dto.UserResponse;
 
@@ -28,10 +27,12 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(userCreateRequest));
     }
 
-    @PatchMapping("/logout")
-    public ResponseEntity<String> logout(@AuthenticationPrincipal CustomDetails customDetails) {
+    @DeleteMapping("/logout")
+    public ResponseEntity<String> logout(
+            @AuthenticationPrincipal CustomDetails customDetails,
+            @RequestBody TokenDTO tokenDTO
+    ) {
 
-        Users users = customDetails.getUsers();
-        return ResponseEntity.ok("성공");
+        return ResponseEntity.ok(authService.logout(tokenDTO.getAccessToken(), customDetails.getUsers()));
     }
 }

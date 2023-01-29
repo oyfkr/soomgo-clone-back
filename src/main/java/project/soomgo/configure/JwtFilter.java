@@ -28,8 +28,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // 2. validateToken 으로 토큰 유효성 검사
         if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+
             Authentication authentication = tokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
         }
         filterChain.doFilter(request, response);
     }
