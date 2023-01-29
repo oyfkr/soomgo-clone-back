@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,11 +23,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import project.soomgo.api.auth.CustomDetails;
+import project.soomgo.entity.user.repository.UsersRepository;
+import project.soomgo.entity.user.service.CustomUserDetailsService;
 
 @Slf4j
 @Component
 public class TokenProvider {
 
+    private final UsersRepository usersRepository;
+    private final CustomUserDetailsService customUserDetailsService;
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "bearer";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 30분
@@ -34,9 +40,12 @@ public class TokenProvider {
 
     private final Key key;
 
-    public TokenProvider(@Value("${jwt.secret}") String secretKey) {
+
+    public TokenProvider(@Value("${jwt.secret}") String secretKey, UsersRepository usersRepository, CustomUserDetailsService customUserDetailsService) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.usersRepository = usersRepository;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     public TokenDTO generateTokenDTO(Authentication authentication) {
@@ -81,8 +90,9 @@ public class TokenProvider {
                 .collect(Collectors.toList());
 
         UserDetails principal = new User(claims.getSubject(), "", authorities);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(claims.getSubject());
 
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
 
     public boolean validateToken(String token) {
