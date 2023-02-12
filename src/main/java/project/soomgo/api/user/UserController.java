@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import project.soomgo.api.auth.CustomDetails;
+import project.soomgo.exception.BaseException;
+import project.soomgo.exception.ErrorCode;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,6 +25,9 @@ public class UserController {
             HttpServletRequest servletRequest
     ) {
 
+        if(true) {
+            throw BaseException.of(ErrorCode.ALREADY_LOGOUT);
+        }
         return ResponseEntity.ok("test");
     }
 }

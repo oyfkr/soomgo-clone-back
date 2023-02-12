@@ -27,6 +27,8 @@ import org.springframework.stereotype.Component;
 import project.soomgo.api.auth.CustomDetails;
 import project.soomgo.entity.user.repository.UsersRepository;
 import project.soomgo.entity.user.service.CustomUserDetailsService;
+import project.soomgo.exception.BaseException;
+import project.soomgo.exception.ErrorCode;
 import project.soomgo.redis.RedisUtil;
 
 @Slf4j
@@ -104,7 +106,7 @@ public class TokenProvider {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             if (redisUtil.hasKeyBlackList(token)){
                 // TODO 에러 발생시키는 부분 수정
-                throw new RuntimeException("로그아웃 했지롱~~");
+                throw BaseException.of(ErrorCode.ALREADY_LOGOUT);
             }
                 return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {

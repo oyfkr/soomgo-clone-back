@@ -21,10 +21,6 @@ public class CustomDetails implements UserDetails {
         return instance;
     }
 
-//    public static CustomDetails ofTest(Long id, String name,) {
-//
-//    }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

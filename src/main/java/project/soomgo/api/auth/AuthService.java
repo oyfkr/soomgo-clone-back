@@ -70,7 +70,7 @@ public class AuthService {
         refreshTokenRepository.deleteRefreshTokenByKey(users.getEmail());
 
         // 레디스에 accessToken 사용못하도록 등록
-        redisUtil.setBlackList(accessToken, "accessToken", 1);
+        redisUtil.setBlackList(accessToken, "accessToken", 5);
 
         return "로그아웃 완료";
     }
