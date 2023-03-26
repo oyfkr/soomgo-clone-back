@@ -20,6 +20,7 @@ public class PostDTO {
     public static PostDTO of(Posts posts) {
         PostDTO instance = new PostDTO();
 
+        instance.id = posts.getId();
         instance.title = posts.getTitle();
         instance.content = posts.getContent();
 

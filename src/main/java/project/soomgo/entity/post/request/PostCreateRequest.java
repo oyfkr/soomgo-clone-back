@@ -17,4 +17,16 @@ public class PostCreateRequest {
     private Long serviceId;
     @ApiModelProperty(value = "포스트이 커뮤니티 type", example = "QUESTION")
     private CommunityType communityType;
+
+    public static PostCreateRequest of(String title, String content, Long userId, Long serviceId, CommunityType communityType) {
+        PostCreateRequest instance = new PostCreateRequest();
+
+        instance.title = title;
+        instance.content = content;
+        instance.userId = userId;
+        instance.serviceId = serviceId;
+        instance.communityType = communityType;
+
+        return instance;
+    }
 }

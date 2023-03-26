@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import lombok.Getter;
-import project.soomgo.entity.community.Community;
 import project.soomgo.entity.post.enums.CommunityType;
 import project.soomgo.entity.post.request.PostCreateRequest;
 import project.soomgo.entity.subject.Subject;
@@ -52,8 +51,9 @@ public class Posts {
         return instance;
     }
 
-    public void updateSubject(Subject subject) {
+    public void changeUserAndSubjectFotCreate(Subject subject, Users users) {
 
         this.subject = subject;
+        this.users = users;
     }
 }
