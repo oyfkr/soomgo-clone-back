@@ -20,4 +20,13 @@ public class Subject {
 
     private Long parentId;
 
+    public static Subject of(String name, Long parentId) {
+        Subject instance = new Subject();
+
+        instance.name = name;
+        instance.parentId = parentId;
+
+        return instance;
+    }
+
 }
