@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import lombok.Getter;
 import project.soomgo.entity.post.enums.CommunityType;
+import project.soomgo.entity.post.enums.PostType;
 import project.soomgo.entity.post.request.PostCreateRequest;
 import project.soomgo.entity.subject.Subject;
 import project.soomgo.entity.user.Users;
@@ -41,12 +42,17 @@ public class Posts {
     @Column
     private String content;
 
+    @Column
+    @Enumerated(EnumType.STRING)
+    private PostType postType;
+
     public static Posts of(PostCreateRequest request) {
         Posts instance = new Posts();
 
         instance.title = request.getTitle();
         instance.content = request.getContent();
         instance.communityType = request.getCommunityType();
+        instance.postType = PostType.ENABLE;
 
         return instance;
     }

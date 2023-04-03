@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.soomgo.api.auth.request.UserLoginRequest;
 import project.soomgo.configure.TokenDTO;
 import project.soomgo.configure.TokenProvider;
 import project.soomgo.entity.token.RefreshToken;
@@ -49,8 +50,8 @@ public class AuthService {
                 savedUser.isMaster());
     }
 
-    public TokenDTO login(UserCreateRequest userCreateRequest) {
-        UsernamePasswordAuthenticationToken authenticationToken = userCreateRequest.toAuthentication();
+    public TokenDTO login(UserLoginRequest request) {
+        UsernamePasswordAuthenticationToken authenticationToken = request.toAuthentication();
         Authentication authenticate = null;
         try {
             authenticate = authenticationManagerBuilder.getObject()

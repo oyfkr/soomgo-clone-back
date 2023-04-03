@@ -1,5 +1,6 @@
 package project.soomgo.entity.user.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,9 +11,13 @@ import project.soomgo.entity.user.Users;
 @NoArgsConstructor
 public class UserCreateRequest {
 
+    @ApiModelProperty(value = "로그인에 쓰일 이메일", example = "asd@asd.com")
     private String email;
+    @ApiModelProperty(value = "로그인에 쓰일 비밀번호", example = "1234")
     private String password;
+    @ApiModelProperty(value = "회원이름", example = "오근혁")
     private String name;
+    @ApiModelProperty(value = "고수 여부", example = "true")
     private boolean isMaster;
 
     public Users convertUserCreateDTOToUsers(PasswordEncoder passwordEncoder) {
