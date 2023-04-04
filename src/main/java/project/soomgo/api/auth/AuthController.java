@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import project.soomgo.api.auth.request.UserLoginRequest;
 import project.soomgo.configure.TokenDTO;
 import project.soomgo.entity.user.dto.UserCreateRequest;
 import project.soomgo.entity.user.dto.UserResponse;
@@ -23,8 +24,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDTO> login(@RequestBody UserCreateRequest userCreateRequest) {
-        return ResponseEntity.ok(authService.login(userCreateRequest));
+    public ResponseEntity<TokenDTO> login(@RequestBody UserLoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
     }
 
     @DeleteMapping("/logout")

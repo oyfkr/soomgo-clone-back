@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.soomgo.api.auth.request.UserLoginRequest;
 import project.soomgo.configure.TokenDTO;
 import project.soomgo.configure.TokenProvider;
 import project.soomgo.entity.token.RefreshToken;
@@ -17,6 +18,8 @@ import project.soomgo.entity.user.Users;
 import project.soomgo.entity.user.dto.UserCreateRequest;
 import project.soomgo.entity.user.dto.UserResponse;
 import project.soomgo.entity.user.repository.UsersRepository;
+import project.soomgo.exception.BaseException;
+import project.soomgo.exception.ErrorCode;
 import project.soomgo.redis.RedisUtil;
 
 @Service
@@ -37,7 +40,7 @@ public class AuthService {
         Optional<Users> users = usersRepository.findByEmail(userCreateDTO.getEmail());
 
         if (users.isPresent()) {
-            throw new RuntimeException("이미 가입되어 있는 이메일입니다.");
+            throw BaseException.of(ErrorCode.ALREADY_REGISTERED_EMAIL);
         }
 
         Users savedUser = usersRepository.save(userCreateDTO.convertUserCreateDTOToUsers(passwordEncoder));
@@ -47,8 +50,8 @@ public class AuthService {
                 savedUser.isMaster());
     }
 
-    public TokenDTO login(UserCreateRequest userCreateRequest) {
-        UsernamePasswordAuthenticationToken authenticationToken = userCreateRequest.toAuthentication();
+    public TokenDTO login(UserLoginRequest request) {
+        UsernamePasswordAuthenticationToken authenticationToken = request.toAuthentication();
         Authentication authenticate = null;
         try {
             authenticate = authenticationManagerBuilder.getObject()

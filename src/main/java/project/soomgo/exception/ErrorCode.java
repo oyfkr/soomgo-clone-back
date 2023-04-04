@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
 
+    //407
+    ALREADY_REGISTERED_EMAIL(HttpStatus.CONFLICT,"이미 등록되어 있는 이메일입니다."),
     ALREADY_LOGOUT(HttpStatus.CONFLICT,"이미 로그아웃 했습니다."),
 
     // 404
