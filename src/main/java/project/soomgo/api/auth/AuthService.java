@@ -58,11 +58,13 @@ public class AuthService {
                     .authenticate(authenticationToken);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw BaseException.of(ErrorCode.USER_NOT_FOUND);
         }
         TokenDTO tokenDTO = tokenProvider.generateTokenDTO(authenticate);
 
-        refreshTokenRepository.save(
-                RefreshToken.of(authenticate.getName(), tokenDTO.getAccessToken()));
+        redisUtil.set(tokenDTO.getRefreshToken(), "refreshToken", 60);
+//        refreshTokenRepository.save(
+//                RefreshToken.of(authenticate.getName(), tokenDTO.getAccessToken()));
 
         return tokenDTO;
     }
