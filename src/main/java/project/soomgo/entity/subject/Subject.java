@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import lombok.Getter;
 
 @Getter
@@ -18,13 +19,14 @@ public class Subject {
 
     private String name;
 
-    private Long parentId;
+    @ManyToOne
+    private Subject parentSubject;
 
-    public static Subject of(String name, Long parentId) {
+    public static Subject of(String name, Subject parentSubject) {
         Subject instance = new Subject();
 
         instance.name = name;
-        instance.parentId = parentId;
+        instance.parentSubject = parentSubject;
 
         return instance;
     }

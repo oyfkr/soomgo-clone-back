@@ -13,4 +13,15 @@ public class UserDTO {
     private String email;
 
     private boolean isMaster;
+
+    public static UserDTO of(Long id, String name, String email, boolean isMaster) {
+        UserDTO instance = new UserDTO();
+
+        instance.id = id;
+        instance.name = name;
+        instance.email = email;
+        instance.isMaster = isMaster;
+
+        return instance;
+    }
 }

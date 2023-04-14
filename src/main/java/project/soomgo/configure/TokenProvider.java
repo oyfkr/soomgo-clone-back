@@ -25,6 +25,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import project.soomgo.api.auth.CustomDetails;
+import project.soomgo.entity.user.Users;
+import project.soomgo.entity.user.dto.UserDTO;
 import project.soomgo.entity.user.repository.UsersRepository;
 import project.soomgo.entity.user.service.CustomUserDetailsService;
 import project.soomgo.exception.BaseException;
@@ -63,11 +65,14 @@ public class TokenProvider {
 
         long now = (new Date()).getTime();
 
+        CustomDetails customDetails = (CustomDetails)authentication.getPrincipal();
+        Users users = customDetails.getUsers();
+
         // Acccess Token 생성
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim("userDto",authentication.getDetails())
+                .claim("userDto", UserDTO.of(users.getId(), users.getName(), users.getEmail(), users.isMaster()))
                 .claim(AUTHORITIES_KEY, authorities)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS512)
@@ -106,7 +111,6 @@ public class TokenProvider {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             if (redisUtil.hasKeyBlackList(token)){
-                // TODO 에러 발생시키는 부분 수정
                 throw BaseException.of(ErrorCode.ALREADY_LOGOUT);
             }
                 return true;
