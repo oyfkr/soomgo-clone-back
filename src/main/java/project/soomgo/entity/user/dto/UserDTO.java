@@ -1,6 +1,7 @@
 package project.soomgo.entity.user.dto;
 
 import lombok.Getter;
+import project.soomgo.entity.user.Users;
 
 
 @Getter
@@ -21,6 +22,17 @@ public class UserDTO {
         instance.name = name;
         instance.email = email;
         instance.isMaster = isMaster;
+
+        return instance;
+    }
+
+    public static UserDTO ofByUser(Users users) {
+        UserDTO instance = new UserDTO();
+
+        instance.id = users.getId();
+        instance.name = users.getName();
+        instance.email = users.getEmail();
+        instance.isMaster = users.isMaster();
 
         return instance;
     }
